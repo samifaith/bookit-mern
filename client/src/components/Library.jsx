@@ -166,8 +166,8 @@ function Library() {
 					<label htmlFor="options-select">
 						Made For You: <span id="books">Books</span>
 					</label>
-					<Link to="/interests">
-						<input type="button" name="" value="INTERESTS" />
+					<Link to="/profile">
+						<input type="button" name="" value="PROFILE" />
 					</Link>
 				</section>
 			</header>

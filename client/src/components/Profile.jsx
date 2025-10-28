@@ -15,6 +15,7 @@ function Profile() {
 		Fiction: false,
 		"Self-Help": false,
 	});
+	const [favorites, setFavorites] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const { user, refreshUser } = useAuth();
 	const navigate = useNavigate();
@@ -23,8 +24,28 @@ function Profile() {
 		if (user && user.genres) {
 			setGenres(user.genres);
 		}
+		fetchFavorites();
 		setLoading(false);
 	}, [user]);
+
+	const fetchFavorites = async () => {
+		try {
+			const response = await api.get("/api/user/favorites");
+			setFavorites(response.data.favoriteBooks || []);
+		} catch (err) {
+			console.error("Error fetching favorites:", err);
+		}
+	};
+
+	const handleRemoveFavorite = async (isbn) => {
+		try {
+			await api.delete(`/api/user/favorites/${isbn}`);
+			setFavorites(favorites.filter((book) => book.isbn !== isbn));
+		} catch (err) {
+			console.error("Error removing favorite:", err);
+			alert("Failed to remove book from favorites");
+		}
+	};
 
 	const handleCheckbox = (genre) => {
 		setGenres({ ...genres, [genre]: !genres[genre] });
@@ -167,6 +188,82 @@ function Profile() {
 							SUBMIT
 						</button>
 					</form>
+
+					{favorites.length > 0 && (
+						<div style={{ marginTop: "40px" }}>
+							<h3
+								style={{
+									fontFamily: "Playfair Display, serif",
+									color: "#4100f4",
+									marginBottom: "20px",
+								}}
+							>
+								Your Favorite Books
+							</h3>
+							<div
+								style={{
+									display: "grid",
+									gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+									gap: "20px",
+								}}
+							>
+								{favorites.map((book) => (
+									<div
+										key={book.isbn}
+										style={{
+											textAlign: "center",
+											position: "relative",
+										}}
+									>
+										<img
+											src={
+												book.imageLink ||
+												"/images/StartupBook.svg"
+											}
+											alt={book.title}
+											style={{
+												width: "100%",
+												maxWidth: "128px",
+												height: "auto",
+												boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
+												marginBottom: "10px",
+											}}
+											onError={(e) => {
+												e.target.src = "/images/StartupBook.svg";
+											}}
+										/>
+										<p
+											style={{
+												fontSize: "14px",
+												fontWeight: "bold",
+												margin: "5px 0",
+											}}
+										>
+											{book.title}
+										</p>
+										<p style={{ fontSize: "12px", color: "#666" }}>
+											{book.authors?.join(", ")}
+										</p>
+										<button
+											onClick={() => handleRemoveFavorite(book.isbn)}
+											style={{
+												marginTop: "10px",
+												padding: "5px 15px",
+												backgroundColor: "#f44100",
+												color: "white",
+												border: "none",
+												borderRadius: "5px",
+												cursor: "pointer",
+												fontSize: "12px",
+											}}
+										>
+											Remove
+										</button>
+									</div>
+								))}
+							</div>
+						</div>
+					)}
 				</div>
 			</section>
 		</div>
