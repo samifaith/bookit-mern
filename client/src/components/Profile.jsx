@@ -216,10 +216,7 @@ function Profile() {
 										}}
 									>
 										<img
-											src={
-												book.imageLink ||
-												"/images/StartupBook.svg"
-											}
+											src={book.imageLink || "/images/StartupBook.svg"}
 											alt={book.title}
 											style={{
 												width: "100%",
@@ -241,24 +238,26 @@ function Profile() {
 										>
 											{book.title}
 										</p>
-										<p style={{ fontSize: "12px", color: "#666" }}>
+										<p style={{ fontSize: "12px", color: "#666", marginBottom: "10px" }}>
 											{book.authors?.join(", ")}
 										</p>
-										<button
+										<div
 											onClick={() => handleRemoveFavorite(book.isbn)}
 											style={{
-												marginTop: "10px",
-												padding: "5px 15px",
-												backgroundColor: "#f44100",
-												color: "white",
-												border: "none",
-												borderRadius: "5px",
 												cursor: "pointer",
-												fontSize: "12px",
+												display: "inline-flex",
+												alignItems: "center",
+												gap: "5px",
 											}}
 										>
-											Remove
-										</button>
+											<i
+												className="fas fa-heart"
+												style={{
+													color: "#f44100",
+													fontSize: "20px",
+												}}
+											></i>
+										</div>
 									</div>
 								))}
 							</div>
