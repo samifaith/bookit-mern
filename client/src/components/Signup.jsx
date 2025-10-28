@@ -25,7 +25,8 @@ function Signup() {
 			await login("demo@bookit.app", "demo123");
 			navigate("/interests");
 		} catch (err) {
-			setError(err.response?.data?.message || "Login failed");
+			console.error("Signup error:", err);
+			setError(err.response?.data?.message || err.message || "Unable to continue");
 		}
 	};
 
