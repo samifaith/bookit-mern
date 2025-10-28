@@ -1,8 +1,6 @@
-const convert = require("xml-js");
-const fetch = require("node-fetch");
+const mongoose = require("mongoose");
 
-module.exports = function (app, passport, db, multer, ObjectId, jwt) {
-	let goodreadsAPI = process.env.GOODREADS_KEY || "pkPx0CaPv5dLSjiSVwWexA";
+module.exports = function (app, passport, db, jwt) {
 	const JWT_SECRET =
 		process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
@@ -11,14 +9,16 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 		const authHeader = req.headers["authorization"];
 		const token = authHeader && authHeader.split(" ")[1];
 
-		if (!token)
+		if (!token) {
 			return res
 				.status(401)
 				.json({ message: "Access denied. No token provided." });
+		}
 
 		jwt.verify(token, JWT_SECRET, (err, user) => {
-			if (err)
+			if (err) {
 				return res.status(403).json({ message: "Invalid or expired token." });
+			}
 			req.user = user;
 			next();
 		});
@@ -85,8 +85,11 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 		try {
 			const user = await db
 				.collection("users")
-				.findOne({ _id: new ObjectId(req.user._id) });
-			if (!user) return res.status(404).json({ message: "User not found" });
+				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
+
+			if (!user) {
+				return res.status(404).json({ message: "User not found" });
+			}
 
 			res.json({
 				_id: user._id,
@@ -106,7 +109,7 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 			const uniqueFavGenres = [...new Set(req.body.favGenres)];
 
 			await db.collection("users").findOneAndUpdate(
-				{ _id: new ObjectId(req.user._id) },
+				{ _id: new mongoose.Types.ObjectId(req.user._id) },
 				{
 					$set: {
 						genres: req.body.genres,
@@ -126,13 +129,13 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 
 	app.put("/api/user/genre-count", authenticateToken, async (req, res) => {
 		try {
-			let genreTitle = req.body.genreTitle;
-			let genreCountSearch =
+			const genreTitle = req.body.genreTitle;
+			const genreCountSearch =
 				"genreCount." +
 				genreTitle.toLowerCase().replace(/-/g, "").replace(/\s+/g, "");
 
 			await db.collection("users").findOneAndUpdate(
-				{ _id: new ObjectId(req.user._id) },
+				{ _id: new mongoose.Types.ObjectId(req.user._id) },
 				{
 					$inc: {
 						[genreCountSearch]: 1,
@@ -157,7 +160,7 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 			// Check if book is already in favorites
 			const user = await db
 				.collection("users")
-				.findOne({ _id: new ObjectId(req.user._id) });
+				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
 
 			const alreadyFavorited = user.favoriteBooks?.some(
 				(book) => book.isbn === isbn
@@ -168,7 +171,7 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 			}
 
 			await db.collection("users").findOneAndUpdate(
-				{ _id: new ObjectId(req.user._id) },
+				{ _id: new mongoose.Types.ObjectId(req.user._id) },
 				{
 					$push: {
 						favoriteBooks: {
@@ -194,7 +197,7 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 		async (req, res) => {
 			try {
 				await db.collection("users").findOneAndUpdate(
-					{ _id: new ObjectId(req.user._id) },
+					{ _id: new mongoose.Types.ObjectId(req.user._id) },
 					{
 						$pull: {
 							favoriteBooks: { isbn: req.params.isbn },
@@ -213,7 +216,7 @@ module.exports = function (app, passport, db, multer, ObjectId, jwt) {
 		try {
 			const user = await db
 				.collection("users")
-				.findOne({ _id: new ObjectId(req.user._id) });
+				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
 
 			res.json({ favoriteBooks: user.favoriteBooks || [] });
 		} catch (err) {

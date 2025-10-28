@@ -1,77 +1,78 @@
 // server.js
 
-// set up ======================================================================
-// get all the tools we need
+// Dependencies ================================================================
 require("dotenv").config();
-var express = require("express");
-var app = express();
-var port = process.env.PORT || 7070;
-const MongoClient = require("mongodb").MongoClient;
-var mongoose = require("mongoose");
-var passport = require("passport");
-var flash = require("connect-flash");
-var morgan = require("morgan");
-var cookieParser = require("cookie-parser");
-var bodyParser = require("body-parser");
-var session = require("express-session");
-const ObjectId = require("mongodb").ObjectID;
-const multer = require("multer");
+const express = require("express");
+const mongoose = require("mongoose");
+const passport = require("passport");
+const morgan = require("morgan");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
-var configDB = require("./config/database.js");
-var db;
+const configDB = require("./config/database.js");
 
-// configuration ===============================================================
-mongoose.set("useNewUrlParser", true);
-mongoose.set("useUnifiedTopology", true);
-mongoose.set("useFindAndModify", false);
+const app = express();
+const port = process.env.PORT || 7070;
+
+// Middleware Configuration ====================================================
+app.use(morgan("dev")); // log requests to console
+app.use(cookieParser()); // read cookies for auth
+app.use(express.json()); // parse JSON bodies (replaces body-parser)
+app.use(express.urlencoded({ extended: true })); // parse URL-encoded bodies
 
 // CORS configuration
 app.use(
 	cors({
-		origin: "http://localhost:3000",
+		origin: process.env.CLIENT_URL || "http://localhost:3000",
 		credentials: true,
 	})
 );
 
-mongoose
-	.connect(configDB.url)
-	.then((database) => {
-		db = database.connection.db;
-		console.log("Connected to database!");
-		require("./app/routes.js")(app, passport, db, multer, ObjectId, jwt);
-		// launch ======================================================================
-		app.listen(port);
-		console.log("The magic happens on port " + port);
-	})
-	.catch((err) => {
-		console.log("Database connection error:", err);
-	});
-
-require("./config/passport")(passport); // pass passport for configuration
-
-// set up our express application
-app.use(morgan("dev")); // log every request to the console
-app.use(cookieParser()); // read cookies (needed for auth)
-app.use(bodyParser.json()); // get information from html forms
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// required for passport
+// Session configuration (required for passport)
 app.use(
 	session({
-		secret: process.env.SESSION_SECRET || "bookit", // session secret
-		resave: true,
-		saveUninitialized: true,
+		secret: process.env.SESSION_SECRET || "bookit",
+		resave: false,
+		saveUninitialized: false,
+		cookie: {
+			secure: process.env.NODE_ENV === "production",
+			httpOnly: true,
+			maxAge: 24 * 60 * 60 * 1000, // 24 hours
+		},
 	})
 );
+
+// Passport initialization
 app.use(passport.initialize());
-app.use(passport.session()); // persistent login sessions
-app.use(flash()); // use connect-flash for flash messages stored in session
+app.use(passport.session());
 
-// routes ======================================================================
-//require('./app/routes.js')(app, passport, db); // load our routes and pass in our app and fully configured passport
+// Passport configuration
+require("./config/passport")(passport);
 
-// launch ======================================================================
-// Moved to mongoose.connect().then() block above
-// app.listen(port);
-// console.log('The magic happens on port ' + port);
+// Database Connection =========================================================
+mongoose
+	.connect(configDB.url)
+	.then(() => {
+		console.log("Connected to database!");
+		const db = mongoose.connection.db;
+
+		// Load routes after DB connection
+		require("./app/routes.js")(app, passport, db, jwt);
+
+		// Start server
+		app.listen(port, () => {
+			console.log(`Server running on port ${port}`);
+		});
+	})
+	.catch((err) => {
+		console.error("Database connection error:", err);
+		process.exit(1);
+	});
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+	await mongoose.connection.close();
+	console.log("Database connection closed");
+	process.exit(0);
+});

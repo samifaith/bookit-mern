@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import axios from "axios";
@@ -8,8 +8,7 @@ function Profile() {
 	const [books, setBooks] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [favorites, setFavorites] = useState([]);
-	const { user, logout, refreshUser } = useAuth();
-	const navigate = useNavigate();
+	const { user, refreshUser } = useAuth();
 
 	useEffect(() => {
 		const loadData = async () => {
@@ -139,11 +138,6 @@ function Profile() {
 			console.error("Error updating favorites:", err);
 			alert(err.response?.data?.message || "Error updating favorites");
 		}
-	};
-
-	const handleLogout = () => {
-		logout();
-		navigate("/");
 	};
 
 	if (loading) return <div>Loading...</div>;
