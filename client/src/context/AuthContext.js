@@ -21,9 +21,10 @@ export const AuthProvider = ({ children }) => {
 			api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 			fetchUser();
 		} else {
-			// No token - use demo mode
-			fetchDemoUser();
+			// Auto-login with demo user
+			loginAsDemo();
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	const fetchUser = async () => {
@@ -32,20 +33,25 @@ export const AuthProvider = ({ children }) => {
 			setUser(response.data);
 		} catch (error) {
 			console.error("Error fetching user:", error);
-			// Fall back to demo user
-			fetchDemoUser();
+			// Fall back to demo login
+			loginAsDemo();
 		} finally {
 			setLoading(false);
 		}
 	};
 
-	const fetchDemoUser = async () => {
+	const loginAsDemo = async () => {
 		try {
-			// Fetch without token - backend will use demo user
-			const response = await api.get("/api/user/profile");
-			setUser({ ...response.data, isDemo: true });
+			const response = await api.post("/api/auth/login", {
+				email: "demo@bookit.app",
+				password: "demo123",
+			});
+			const { token, user } = response.data;
+			localStorage.setItem("token", token);
+			api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+			setUser({ ...user, isDemo: true });
 		} catch (error) {
-			console.error("Error fetching demo user:", error);
+			console.error("Error logging in as demo:", error);
 		} finally {
 			setLoading(false);
 		}

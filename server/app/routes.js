@@ -4,28 +4,22 @@ module.exports = function (app, passport, db, jwt) {
 	const JWT_SECRET =
 		process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
-	// Demo mode - using a default demo user
-	const DEMO_USER_ID = "6750000000000000000demo"; // Fixed demo user ID
-
-	// Optional authentication - falls back to demo user
-	const optionalAuth = async (req, res, next) => {
+	// JWT Authentication Middleware
+	const authenticateToken = (req, res, next) => {
 		const authHeader = req.headers["authorization"];
 		const token = authHeader && authHeader.split(" ")[1];
 
 		if (!token) {
-			// No token provided - use demo user
-			req.user = { _id: DEMO_USER_ID, email: "demo@bookit.app" };
-			return next();
+			return res
+				.status(401)
+				.json({ message: "Access denied. No token provided." });
 		}
 
-		// Token provided - verify it
 		jwt.verify(token, JWT_SECRET, (err, user) => {
 			if (err) {
-				// Invalid token - fall back to demo user
-				req.user = { _id: DEMO_USER_ID, email: "demo@bookit.app" };
-			} else {
-				req.user = user;
+				return res.status(403).json({ message: "Invalid or expired token." });
 			}
+			req.user = user;
 			next();
 		});
 	};
@@ -86,45 +80,9 @@ module.exports = function (app, passport, db, jwt) {
 		})(req, res, next);
 	});
 
-	// USER ROUTES
-	app.get("/api/user/profile", optionalAuth, async (req, res) => {
+		// USER ROUTES
+	app.get("/api/user/profile", authenticateToken, async (req, res) => {
 		try {
-			// If demo user, return demo data directly
-			if (req.user._id === DEMO_USER_ID) {
-				return res.json({
-					_id: DEMO_USER_ID,
-					local: {
-						email: "demo@bookit.app",
-						firstName: "Demo",
-						lastName: "User",
-					},
-					genres: {
-						Romance: true,
-						Mystery: true,
-						Fantasy: true,
-						"Science-Fiction": false,
-						Thriller: false,
-						Juvenile: false,
-						NonFiction: false,
-						Fiction: false,
-						"Self-Help": false,
-					},
-					favGenres: ["Romance", "Mystery", "Fantasy"],
-					genreCount: {
-						romance: 0,
-						mystery: 0,
-						fantasy: 0,
-						scienceFiction: 0,
-						thriller: 0,
-						juvenile: 0,
-						nonFiction: 0,
-						fiction: 0,
-						selfhelp: 0,
-					},
-				});
-			}
-
-			// For real users, fetch from database
 			const user = await db
 				.collection("users")
 				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
@@ -140,6 +98,127 @@ module.exports = function (app, passport, db, jwt) {
 				favGenres: user.favGenres,
 				genreCount: user.genreCount,
 			});
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	});
+
+	app.put("/api/user/interests", authenticateToken, async (req, res) => {
+		try {
+			// Remove duplicates from favGenres array
+			const uniqueFavGenres = [...new Set(req.body.favGenres)];
+
+			await db.collection("users").findOneAndUpdate(
+				{ _id: new mongoose.Types.ObjectId(req.user._id) },
+				{
+					$set: {
+						genres: req.body.genres,
+						favGenres: uniqueFavGenres,
+					},
+				},
+				{
+					upsert: false,
+					new: true,
+				}
+			);
+			res.json({ message: "Interests updated successfully" });
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	});
+
+	app.put("/api/user/genre-count", authenticateToken, async (req, res) => {
+		try {
+			const genreTitle = req.body.genreTitle;
+			const genreCountSearch =
+				"genreCount." +
+				genreTitle.toLowerCase().replace(/-/g, "").replace(/\s+/g, "");
+
+			await db.collection("users").findOneAndUpdate(
+				{ _id: new mongoose.Types.ObjectId(req.user._id) },
+				{
+					$inc: {
+						[genreCountSearch]: 1,
+					},
+				},
+				{
+					sort: { _id: -1 },
+					upsert: true,
+				}
+			);
+			res.json({ message: "Genre count updated" });
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	});
+
+	// FAVORITE BOOKS ROUTES
+	app.post("/api/user/favorites", authenticateToken, async (req, res) => {
+		try {
+			const { isbn, title, authors, imageLink } = req.body;
+
+			// Check if book is already in favorites
+			const user = await db
+				.collection("users")
+				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
+
+			const alreadyFavorited = user.favoriteBooks?.some(
+				(book) => book.isbn === isbn
+			);
+
+			if (alreadyFavorited) {
+				return res.status(400).json({ message: "Book already in favorites" });
+			}
+
+			await db.collection("users").findOneAndUpdate(
+				{ _id: new mongoose.Types.ObjectId(req.user._id) },
+				{
+					$push: {
+						favoriteBooks: {
+							isbn,
+							title,
+							authors,
+							imageLink,
+							addedAt: new Date(),
+						},
+					},
+				}
+			);
+
+			res.json({ message: "Book added to favorites" });
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	});
+
+	app.delete(
+		"/api/user/favorites/:isbn",
+		authenticateToken,
+		async (req, res) => {
+			try {
+				await db.collection("users").findOneAndUpdate(
+					{ _id: new mongoose.Types.ObjectId(req.user._id) },
+					{
+						$pull: {
+							favoriteBooks: { isbn: req.params.isbn },
+						},
+					}
+				);
+
+				res.json({ message: "Book removed from favorites" });
+			} catch (err) {
+				res.status(500).json({ message: err.message });
+			}
+		}
+	);
+
+	app.get("/api/user/favorites", authenticateToken, async (req, res) => {
+		try {
+			const user = await db
+				.collection("users")
+				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
+
+			res.json({ favoriteBooks: user.favoriteBooks || [] });
 		} catch (err) {
 			res.status(500).json({ message: err.message });
 		}
