@@ -219,9 +219,9 @@ function Profile() {
 											src={book.imageLink || "/images/StartupBook.svg"}
 											alt={book.title}
 											style={{
-												width: "100%",
-												maxWidth: "128px",
-												height: "auto",
+												width: "128px",
+												height: "192px",
+												objectFit: "cover",
 												boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
 												marginBottom: "10px",
 											}}
