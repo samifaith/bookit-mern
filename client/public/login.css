@@ -1,0 +1,57 @@
+body {
+	margin: 0;
+	padding: 0;
+	color: #000;
+	line-height: 1.4;
+	font-family: "Lato", Helvetica, Arial, sans-serif;
+	background: rgb(49, 25, 112);
+	background: linear-gradient(
+		90deg,
+		rgba(49, 25, 112, 1) 0%,
+		rgba(67, 47, 222, 1) 39%,
+		rgba(117, 0, 255, 1) 100%
+	);
+	/* background: #432FDE; */
+	color: white;
+	height: 100vh;
+	overflow: hidden;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Playfair Display", Georgia, serif;
+	font-weight: 700;
+}
+
+label {
+	font-family: "Lato", Helvetica, Arial, sans-serif;
+}
+
+.container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 100vh;
+	padding: 20px;
+}
+
+button {
+	background: rgba(65, 0, 244) !important;
+	border: none !important;
+	border-radius: 50px;
+	font-size: 1rem;
+	font-family: "Lato";
+	color: white;
+	padding: 16px 48px;
+	transition-duration: 0.3s;
+	cursor: pointer;
+}
+
+button:hover {
+	transform: scale(1.05);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
