@@ -80,7 +80,7 @@ module.exports = function (app, passport, db, jwt) {
 		})(req, res, next);
 	});
 
-		// USER ROUTES
+	// USER ROUTES
 	app.get("/api/user/profile", authenticateToken, async (req, res) => {
 		try {
 			const user = await db
@@ -218,11 +218,11 @@ module.exports = function (app, passport, db, jwt) {
 				.collection("users")
 				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
 
-		res.json({ favoriteBooks: user.favoriteBooks || [] });
-	} catch (err) {
-		res.status(500).json({ message: err.message });
-	}
-});	// =============================================================================
+			res.json({ favoriteBooks: user.favoriteBooks || [] });
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	}); // =============================================================================
 	// LEGACY ROUTES (for backwards compatibility if needed) ======================
 	// =============================================================================
 

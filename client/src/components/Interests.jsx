@@ -42,8 +42,7 @@ function Interests() {
 			navigate("/profile");
 		} catch (err) {
 			console.error("Error updating interests:", err);
-			// Even if the save fails, still navigate to profile in demo mode
-			navigate("/profile");
+			alert("Failed to save interests. Please try again.");
 		}
 	};
 

@@ -141,9 +141,7 @@ function Profile() {
 	};
 
 	if (loading) return <div>Loading...</div>;
-
-	// Show a message for demo users
-	const isDemoMode = !localStorage.getItem("token") || user?.isDemo;
+	if (!user) return <div>Please log in to view your profile</div>;
 
 	return (
 		<div>
@@ -157,33 +155,6 @@ function Profile() {
 				href="https://fonts.googleapis.com/css?family=Lato|Playfair+Display|Playfair+Display+SC&display=swap"
 				rel="stylesheet"
 			/>
-
-			{isDemoMode && (
-				<div
-					style={{
-						backgroundColor: "rgba(65, 0, 244, 0.1)",
-						padding: "15px",
-						textAlign: "center",
-						borderBottom: "2px solid rgba(65, 0, 244, 0.3)",
-						fontFamily: "Lato, sans-serif",
-					}}
-				>
-					<p style={{ margin: 0, fontSize: "14px" }}>
-						📚 <strong>Demo Mode</strong> - Exploring as a guest.
-						<Link
-							to="/signup"
-							style={{
-								marginLeft: "10px",
-								color: "rgba(65, 0, 244)",
-								fontWeight: "bold",
-							}}
-						>
-							Create an account
-						</Link>{" "}
-						to save your preferences!
-					</p>
-				</div>
-			)}
 
 			<header>
 				<section id="logo">

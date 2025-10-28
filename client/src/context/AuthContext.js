@@ -21,8 +21,7 @@ export const AuthProvider = ({ children }) => {
 			api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 			fetchUser();
 		} else {
-			// Auto-login with demo user
-			loginAsDemo();
+			setLoading(false);
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
@@ -33,25 +32,8 @@ export const AuthProvider = ({ children }) => {
 			setUser(response.data);
 		} catch (error) {
 			console.error("Error fetching user:", error);
-			// Fall back to demo login
-			loginAsDemo();
-		} finally {
-			setLoading(false);
-		}
-	};
-
-	const loginAsDemo = async () => {
-		try {
-			const response = await api.post("/api/auth/login", {
-				email: "demo@bookit.app",
-				password: "demo123",
-			});
-			const { token, user } = response.data;
-			localStorage.setItem("token", token);
-			api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-			setUser({ ...user, isDemo: true });
-		} catch (error) {
-			console.error("Error logging in as demo:", error);
+			localStorage.removeItem("token");
+			delete api.defaults.headers.common["Authorization"];
 		} finally {
 			setLoading(false);
 		}

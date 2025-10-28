@@ -40,12 +40,9 @@ function Home() {
 				<section id="leftPanel">
 					<p id="discoverMemo">Discover your next adventure</p>
 					<p id="curatedMemo">Curated Books Made Just For You</p>
-					<Link to="/interests">
-						<button type="submit">TRY IT NOW</button>
+					<Link to="/signup">
+						<button type="submit">CREATE AN ACCOUNT</button>
 					</Link>
-					<p style={{ fontSize: "14px", marginTop: "10px", opacity: 0.8 }}>
-						No signup required - explore in demo mode!
-					</p>
 				</section>
 				<section id="rightPanel">
 					<img src="/images/Reader-on-Books.png" alt="" />
