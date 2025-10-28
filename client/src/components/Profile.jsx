@@ -159,18 +159,28 @@ function Profile() {
 			/>
 
 			{isDemoMode && (
-				<div style={{
-					backgroundColor: 'rgba(65, 0, 244, 0.1)',
-					padding: '15px',
-					textAlign: 'center',
-					borderBottom: '2px solid rgba(65, 0, 244, 0.3)',
-					fontFamily: 'Lato, sans-serif'
-				}}>
-					<p style={{ margin: 0, fontSize: '14px' }}>
-						📚 <strong>Demo Mode</strong> - Exploring as a guest. 
-						<Link to="/signup" style={{ marginLeft: '10px', color: 'rgba(65, 0, 244)', fontWeight: 'bold' }}>
+				<div
+					style={{
+						backgroundColor: "rgba(65, 0, 244, 0.1)",
+						padding: "15px",
+						textAlign: "center",
+						borderBottom: "2px solid rgba(65, 0, 244, 0.3)",
+						fontFamily: "Lato, sans-serif",
+					}}
+				>
+					<p style={{ margin: 0, fontSize: "14px" }}>
+						📚 <strong>Demo Mode</strong> - Exploring as a guest.
+						<Link
+							to="/signup"
+							style={{
+								marginLeft: "10px",
+								color: "rgba(65, 0, 244)",
+								fontWeight: "bold",
+							}}
+						>
 							Create an account
-						</Link> to save your preferences!
+						</Link>{" "}
+						to save your preferences!
 					</p>
 				</div>
 			)}

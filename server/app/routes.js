@@ -89,12 +89,9 @@ module.exports = function (app, passport, db, jwt) {
 	// USER ROUTES
 	app.get("/api/user/profile", optionalAuth, async (req, res) => {
 		try {
-			// Ensure demo user exists
-			let user = await db.collection("users").findOne({ _id: req.user._id });
-
-			// If demo user doesn't exist, create default demo user data
-			if (!user && req.user._id === DEMO_USER_ID) {
-				user = {
+			// If demo user, return demo data directly
+			if (req.user._id === DEMO_USER_ID) {
+				return res.json({
 					_id: DEMO_USER_ID,
 					local: {
 						email: "demo@bookit.app",
@@ -102,17 +99,17 @@ module.exports = function (app, passport, db, jwt) {
 						lastName: "User",
 					},
 					genres: {
-						romance: true,
-						mystery: true,
-						fantasy: true,
-						scienceFiction: false,
-						thriller: false,
-						juvenile: false,
-						nonFiction: false,
-						fiction: false,
-						selfhelp: false,
+						Romance: true,
+						Mystery: true,
+						Fantasy: true,
+						"Science-Fiction": false,
+						Thriller: false,
+						Juvenile: false,
+						NonFiction: false,
+						Fiction: false,
+						"Self-Help": false,
 					},
-					favGenres: ["romance", "mystery", "fantasy"],
+					favGenres: ["Romance", "Mystery", "Fantasy"],
 					genreCount: {
 						romance: 0,
 						mystery: 0,
@@ -124,9 +121,13 @@ module.exports = function (app, passport, db, jwt) {
 						fiction: 0,
 						selfhelp: 0,
 					},
-					favoriteBooks: [],
-				};
+				});
 			}
+
+			// For real users, fetch from database
+			const user = await db
+				.collection("users")
+				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
 
 			if (!user) {
 				return res.status(404).json({ message: "User not found" });
