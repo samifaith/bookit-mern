@@ -106,83 +106,50 @@ function Profile() {
 					</header>
 					<p>Select the genres you love most.</p>
 					<form id="listInput" onSubmit={handleSubmit}>
-						<div className="">
-							<input
-								type="checkbox"
-								name="genre"
-								value="Romance"
-								checked={genres.Romance}
-								onChange={() => handleCheckbox("Romance")}
-							/>
-							<label htmlFor="Romance">Romance</label>
-							<input
-								type="checkbox"
-								name="genre"
-								value="Mystery"
-								checked={genres.Mystery}
-								onChange={() => handleCheckbox("Mystery")}
-							/>
-							<label htmlFor="Mystery">Mystery</label>
-							<input
-								type="checkbox"
-								name="genre"
-								value="Fantasy"
-								checked={genres.Fantasy}
-								onChange={() => handleCheckbox("Fantasy")}
-							/>
-							<label htmlFor="Fantasy">Fantasy</label>
-						</div>
-						<div className="">
-							<input
-								type="checkbox"
-								name="genre"
-								value="Science-Fiction"
-								checked={genres["Science-Fiction"]}
-								onChange={() => handleCheckbox("Science-Fiction")}
-							/>
-							<label htmlFor="Science-Fiction">Science Fiction</label>
-							<input
-								type="checkbox"
-								name="genre"
-								value="Thriller"
-								checked={genres.Thriller}
-								onChange={() => handleCheckbox("Thriller")}
-							/>
-							<label htmlFor="Thriller">Thriller</label>
-							<input
-								type="checkbox"
-								name="genre"
-								value="Juvenile"
-								checked={genres.Juvenile}
-								onChange={() => handleCheckbox("Juvenile")}
-							/>
-							<label htmlFor="Juvenile">Young Adult</label>
-						</div>
-						<div className="">
-							<input
-								type="checkbox"
-								name="genre"
-								value="NonFiction"
-								checked={genres.NonFiction}
-								onChange={() => handleCheckbox("NonFiction")}
-							/>
-							<label htmlFor="NonFiction">Non-Fiction</label>
-							<input
-								type="checkbox"
-								name="genre"
-								value="Fiction"
-								checked={genres.Fiction}
-								onChange={() => handleCheckbox("Fiction")}
-							/>
-							<label htmlFor="Fiction">Fiction</label>
-							<input
-								type="checkbox"
-								name="genre"
-								value="Self-Help"
-								checked={genres["Self-Help"]}
-								onChange={() => handleCheckbox("Self-Help")}
-							/>
-							<label htmlFor="Self-Help">Self-Help</label>
+						<div
+							style={{
+								display: "flex",
+								flexWrap: "wrap",
+								gap: "12px",
+								marginBottom: "30px",
+							}}
+						>
+							{Object.keys(genres).map((genre) => {
+								const displayName =
+									genre === "Science-Fiction"
+										? "Science Fiction"
+										: genre === "NonFiction"
+										? "Non-Fiction"
+										: genre === "Juvenile"
+										? "Young Adult"
+										: genre;
+								return (
+									<button
+										key={genre}
+										type="button"
+										onClick={() => handleCheckbox(genre)}
+										style={{
+											padding: "12px 24px",
+											borderRadius: "25px",
+											border: genres[genre]
+												? "2px solid #4100f4"
+												: "2px solid #e0e0e0",
+											backgroundColor: genres[genre] ? "#4100f4" : "#ffffff",
+											color: genres[genre] ? "#ffffff" : "#333333",
+											fontSize: "15px",
+											fontWeight: "500",
+											cursor: "pointer",
+											transition: "all 0.3s ease",
+											fontFamily: "Lato, sans-serif",
+											boxShadow: genres[genre]
+												? "0 4px 12px rgba(65, 0, 244, 0.3)"
+												: "0 2px 8px rgba(0, 0, 0, 0.08)",
+										}}
+									>
+										{displayName}
+									</button>
+								);
+							})}
 						</div>
 						<button id="nextButton" type="submit">
 							SUBMIT
