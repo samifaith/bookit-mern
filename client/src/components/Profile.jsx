@@ -80,7 +80,7 @@ function Profile() {
 							<li>
 								<img src="/images/purpleplane.png" alt="" />
 							</li>
-							<li id="interestStep">INTERESTS</li>
+							<li id="interestStep">PROFILE</li>
 						</ol>
 					</header>
 					<p>Select the genres you love most.</p>
