@@ -36,10 +36,14 @@ function Interests() {
 
 		try {
 			await api.put("/api/user/interests", { genres, favGenres });
-			await refreshUser(); // Refresh user data to update genres
+			if (refreshUser) {
+				await refreshUser(); // Refresh user data to update genres
+			}
 			navigate("/profile");
 		} catch (err) {
 			console.error("Error updating interests:", err);
+			// Even if the save fails, still navigate to profile in demo mode
+			navigate("/profile");
 		}
 	};
 

@@ -21,7 +21,8 @@ export const AuthProvider = ({ children }) => {
 			api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 			fetchUser();
 		} else {
-			setLoading(false);
+			// No token - use demo mode
+			fetchDemoUser();
 		}
 	}, []);
 
@@ -31,7 +32,20 @@ export const AuthProvider = ({ children }) => {
 			setUser(response.data);
 		} catch (error) {
 			console.error("Error fetching user:", error);
-			logout();
+			// Fall back to demo user
+			fetchDemoUser();
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	const fetchDemoUser = async () => {
+		try {
+			// Fetch without token - backend will use demo user
+			const response = await api.get("/api/user/profile");
+			setUser({ ...response.data, isDemo: true });
+		} catch (error) {
+			console.error("Error fetching demo user:", error);
 		} finally {
 			setLoading(false);
 		}

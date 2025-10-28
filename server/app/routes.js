@@ -4,22 +4,28 @@ module.exports = function (app, passport, db, jwt) {
 	const JWT_SECRET =
 		process.env.JWT_SECRET || "your-secret-key-change-in-production";
 
-	// JWT Authentication Middleware
-	const authenticateToken = (req, res, next) => {
+	// Demo mode - using a default demo user
+	const DEMO_USER_ID = "6750000000000000000demo"; // Fixed demo user ID
+
+	// Optional authentication - falls back to demo user
+	const optionalAuth = async (req, res, next) => {
 		const authHeader = req.headers["authorization"];
 		const token = authHeader && authHeader.split(" ")[1];
 
 		if (!token) {
-			return res
-				.status(401)
-				.json({ message: "Access denied. No token provided." });
+			// No token provided - use demo user
+			req.user = { _id: DEMO_USER_ID, email: "demo@bookit.app" };
+			return next();
 		}
 
+		// Token provided - verify it
 		jwt.verify(token, JWT_SECRET, (err, user) => {
 			if (err) {
-				return res.status(403).json({ message: "Invalid or expired token." });
+				// Invalid token - fall back to demo user
+				req.user = { _id: DEMO_USER_ID, email: "demo@bookit.app" };
+			} else {
+				req.user = user;
 			}
-			req.user = user;
 			next();
 		});
 	};
@@ -81,11 +87,46 @@ module.exports = function (app, passport, db, jwt) {
 	});
 
 	// USER ROUTES
-	app.get("/api/user/profile", authenticateToken, async (req, res) => {
+	app.get("/api/user/profile", optionalAuth, async (req, res) => {
 		try {
-			const user = await db
-				.collection("users")
-				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
+			// Ensure demo user exists
+			let user = await db.collection("users").findOne({ _id: req.user._id });
+
+			// If demo user doesn't exist, create default demo user data
+			if (!user && req.user._id === DEMO_USER_ID) {
+				user = {
+					_id: DEMO_USER_ID,
+					local: {
+						email: "demo@bookit.app",
+						firstName: "Demo",
+						lastName: "User",
+					},
+					genres: {
+						romance: true,
+						mystery: true,
+						fantasy: true,
+						scienceFiction: false,
+						thriller: false,
+						juvenile: false,
+						nonFiction: false,
+						fiction: false,
+						selfhelp: false,
+					},
+					favGenres: ["romance", "mystery", "fantasy"],
+					genreCount: {
+						romance: 0,
+						mystery: 0,
+						fantasy: 0,
+						scienceFiction: 0,
+						thriller: 0,
+						juvenile: 0,
+						nonFiction: 0,
+						fiction: 0,
+						selfhelp: 0,
+					},
+					favoriteBooks: [],
+				};
+			}
 
 			if (!user) {
 				return res.status(404).json({ message: "User not found" });
@@ -103,10 +144,17 @@ module.exports = function (app, passport, db, jwt) {
 		}
 	});
 
-	app.put("/api/user/interests", authenticateToken, async (req, res) => {
+	app.put("/api/user/interests", optionalAuth, async (req, res) => {
 		try {
 			// Remove duplicates from favGenres array
 			const uniqueFavGenres = [...new Set(req.body.favGenres)];
+
+			// For demo user, just return success without saving
+			if (req.user._id === DEMO_USER_ID) {
+				return res.json({
+					message: "Interests updated successfully (demo mode)",
+				});
+			}
 
 			await db.collection("users").findOneAndUpdate(
 				{ _id: new mongoose.Types.ObjectId(req.user._id) },
@@ -127,12 +175,17 @@ module.exports = function (app, passport, db, jwt) {
 		}
 	});
 
-	app.put("/api/user/genre-count", authenticateToken, async (req, res) => {
+	app.put("/api/user/genre-count", optionalAuth, async (req, res) => {
 		try {
 			const genreTitle = req.body.genreTitle;
 			const genreCountSearch =
 				"genreCount." +
 				genreTitle.toLowerCase().replace(/-/g, "").replace(/\s+/g, "");
+
+			// For demo user, just return success without saving
+			if (req.user._id === DEMO_USER_ID) {
+				return res.json({ message: "Genre count updated (demo mode)" });
+			}
 
 			await db.collection("users").findOneAndUpdate(
 				{ _id: new mongoose.Types.ObjectId(req.user._id) },
@@ -153,9 +206,14 @@ module.exports = function (app, passport, db, jwt) {
 	});
 
 	// FAVORITE BOOKS ROUTES
-	app.post("/api/user/favorites", authenticateToken, async (req, res) => {
+	app.post("/api/user/favorites", optionalAuth, async (req, res) => {
 		try {
 			const { isbn, title, authors, imageLink } = req.body;
+
+			// For demo user, just return success without saving
+			if (req.user._id === DEMO_USER_ID) {
+				return res.json({ message: "Book added to favorites (demo mode)" });
+			}
 
 			// Check if book is already in favorites
 			const user = await db
@@ -191,29 +249,35 @@ module.exports = function (app, passport, db, jwt) {
 		}
 	});
 
-	app.delete(
-		"/api/user/favorites/:isbn",
-		authenticateToken,
-		async (req, res) => {
-			try {
-				await db.collection("users").findOneAndUpdate(
-					{ _id: new mongoose.Types.ObjectId(req.user._id) },
-					{
-						$pull: {
-							favoriteBooks: { isbn: req.params.isbn },
-						},
-					}
-				);
-
-				res.json({ message: "Book removed from favorites" });
-			} catch (err) {
-				res.status(500).json({ message: err.message });
-			}
-		}
-	);
-
-	app.get("/api/user/favorites", authenticateToken, async (req, res) => {
+	app.delete("/api/user/favorites/:isbn", optionalAuth, async (req, res) => {
 		try {
+			// For demo user, just return success without saving
+			if (req.user._id === DEMO_USER_ID) {
+				return res.json({ message: "Book removed from favorites (demo mode)" });
+			}
+
+			await db.collection("users").findOneAndUpdate(
+				{ _id: new mongoose.Types.ObjectId(req.user._id) },
+				{
+					$pull: {
+						favoriteBooks: { isbn: req.params.isbn },
+					},
+				}
+			);
+
+			res.json({ message: "Book removed from favorites" });
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	});
+
+	app.get("/api/user/favorites", optionalAuth, async (req, res) => {
+		try {
+			// For demo user, return empty array
+			if (req.user._id === DEMO_USER_ID) {
+				return res.json({ favoriteBooks: [] });
+			}
+
 			const user = await db
 				.collection("users")
 				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
