@@ -39,7 +39,7 @@ function Interests() {
 			if (refreshUser) {
 				await refreshUser(); // Refresh user data to update genres
 			}
-			navigate("/profile");
+			navigate("/library");
 		} catch (err) {
 			console.error("Error updating interests:", err);
 			alert("Failed to save interests. Please try again.");

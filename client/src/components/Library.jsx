@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import axios from "axios";
 
-function Profile() {
+function Library() {
 	const [books, setBooks] = useState([]);
 	const [loading, setLoading] = useState(true);
 	const [favorites, setFavorites] = useState([]);
@@ -275,4 +275,4 @@ function Profile() {
 	);
 }
 
-export default Profile;
+export default Library;

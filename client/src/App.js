@@ -10,7 +10,7 @@ import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Interests from "./components/Interests";
-import Profile from "./components/Profile";
+import Library from "./components/Library";
 import BookPage from "./components/BookPage";
 
 const ProtectedRoute = ({ children }) => {
@@ -35,10 +35,10 @@ function App() {
 						}
 					/>
 					<Route
-						path="/profile"
+						path="/library"
 						element={
 							<ProtectedRoute>
-								<Profile />
+								<Library />
 							</ProtectedRoute>
 						}
 					/>

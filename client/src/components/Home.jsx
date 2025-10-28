@@ -24,9 +24,9 @@ function Home() {
 				</h1>
 				<section>
 					{user ? (
-						<Link to="/profile" className="btn btn-default" id="loginIcon">
+						<Link to="/library" className="btn btn-default" id="loginIcon">
 							<i className="fas fa-user fa-2x"></i>
-							<p>PROFILE</p>
+							<p>LIBRARY</p>
 						</Link>
 					) : (
 						<Link to="/login" className="btn btn-default" id="loginIcon">
