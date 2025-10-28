@@ -13,8 +13,9 @@ function Login() {
 		e.preventDefault();
 		setError("");
 		try {
-			await login(email, password);
-			navigate("/profile");
+			// Auto-login with demo account
+			await login("demo@bookit.app", "demo123");
+			navigate("/library");
 		} catch (err) {
 			setError(
 				err.response?.data?.message ||
