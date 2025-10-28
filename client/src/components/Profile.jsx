@@ -238,7 +238,13 @@ function Profile() {
 										>
 											{book.title}
 										</p>
-										<p style={{ fontSize: "12px", color: "#666", marginBottom: "10px" }}>
+										<p
+											style={{
+												fontSize: "12px",
+												color: "#666",
+												marginBottom: "10px",
+											}}
+										>
 											{book.authors?.join(", ")}
 										</p>
 										<div
@@ -253,7 +259,7 @@ function Profile() {
 											<i
 												className="fas fa-heart"
 												style={{
-													color: "#f44100",
+													color: "#4100f4",
 													fontSize: "20px",
 												}}
 											></i>
