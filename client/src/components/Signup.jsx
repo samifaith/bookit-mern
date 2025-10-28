@@ -72,10 +72,7 @@ function Signup() {
 				<div className="container">
 					<form onSubmit={handleSubmit}>
 						<p>Create an account to discover your next great read.</p>
-						<p style={{ fontSize: "14px", color: "#666", marginBottom: "20px" }}>
-							Click NEXT to explore with a demo account
-						</p>
-						<label htmlFor="firstName">First Name (optional)</label>
+						<label htmlFor="firstName">First Name</label>
 						<input
 							type="text"
 							id="firstName"
@@ -83,7 +80,7 @@ function Signup() {
 							value={formData.firstName}
 							onChange={handleChange}
 						/>
-						<label htmlFor="lastName">Last Name (optional)</label>
+						<label htmlFor="lastName">Last Name</label>
 						<input
 							type="text"
 							id="lastName"
@@ -91,7 +88,7 @@ function Signup() {
 							value={formData.lastName}
 							onChange={handleChange}
 						/>
-						<label htmlFor="email">Email (optional)</label>
+						<label htmlFor="email">Email</label>
 						<input
 							type="text"
 							id="email"
@@ -99,7 +96,7 @@ function Signup() {
 							value={formData.email}
 							onChange={handleChange}
 						/>
-						<label htmlFor="password">Password (optional)</label>
+						<label htmlFor="password">Password</label>
 						<input
 							type="password"
 							id="password"
