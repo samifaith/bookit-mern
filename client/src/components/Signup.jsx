@@ -10,7 +10,7 @@ function Signup() {
 		password: "",
 	});
 	const [error, setError] = useState("");
-	const { signup } = useAuth();
+	const { login } = useAuth();
 	const navigate = useNavigate();
 
 	const handleChange = (e) => {
@@ -21,10 +21,11 @@ function Signup() {
 		e.preventDefault();
 		setError("");
 		try {
-			await signup(formData);
+			// Auto-login with demo account
+			await login("demo@bookit.app", "demo123");
 			navigate("/interests");
 		} catch (err) {
-			setError(err.response?.data?.message || "Signup failed");
+			setError(err.response?.data?.message || "Login failed");
 		}
 	};
 
@@ -71,7 +72,10 @@ function Signup() {
 				<div className="container">
 					<form onSubmit={handleSubmit}>
 						<p>Create an account to discover your next great read.</p>
-						<label htmlFor="firstName">First Name</label>
+						<p style={{ fontSize: "14px", color: "#666", marginBottom: "20px" }}>
+							Click NEXT to explore with a demo account
+						</p>
+						<label htmlFor="firstName">First Name (optional)</label>
 						<input
 							type="text"
 							id="firstName"
@@ -79,7 +83,7 @@ function Signup() {
 							value={formData.firstName}
 							onChange={handleChange}
 						/>
-						<label htmlFor="lastName">Last Name</label>
+						<label htmlFor="lastName">Last Name (optional)</label>
 						<input
 							type="text"
 							id="lastName"
@@ -87,7 +91,7 @@ function Signup() {
 							value={formData.lastName}
 							onChange={handleChange}
 						/>
-						<label htmlFor="email">Email</label>
+						<label htmlFor="email">Email (optional)</label>
 						<input
 							type="text"
 							id="email"
@@ -95,7 +99,7 @@ function Signup() {
 							value={formData.email}
 							onChange={handleChange}
 						/>
-						<label htmlFor="password">Password</label>
+						<label htmlFor="password">Password (optional)</label>
 						<input
 							type="password"
 							id="password"
