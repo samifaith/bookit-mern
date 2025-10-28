@@ -9,7 +9,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext";
 import Home from "./components/Home";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
-import Interests from "./components/Interests";
+import Profile from "./components/Profile";
 import Library from "./components/Library";
 import BookPage from "./components/BookPage";
 
@@ -27,10 +27,10 @@ function App() {
 					<Route path="/signup" element={<Signup />} />
 					<Route path="/login" element={<Login />} />
 					<Route
-						path="/interests"
+						path="/profile"
 						element={
 							<ProtectedRoute>
-								<Interests />
+								<Profile />
 							</ProtectedRoute>
 						}
 					/>

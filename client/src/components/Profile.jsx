@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 
-function Interests() {
+function Profile() {
 	const [genres, setGenres] = useState({
 		Romance: false,
 		Mystery: false,
@@ -173,4 +173,4 @@ function Interests() {
 	);
 }
 
-export default Interests;
+export default Profile;

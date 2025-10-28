@@ -23,10 +23,12 @@ function Signup() {
 		try {
 			// Auto-login with demo account
 			await login("demo@bookit.app", "demo123");
-			navigate("/interests");
+			navigate("/profile");
 		} catch (err) {
 			console.error("Signup error:", err);
-			setError(err.response?.data?.message || err.message || "Unable to continue");
+			setError(
+				err.response?.data?.message || err.message || "Unable to continue"
+			);
 		}
 	};
 
