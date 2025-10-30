@@ -1,0 +1,75 @@
+/* Bookshelf styles for migrated inline styles */
+
+.shelf-header {
+	cursor: pointer;
+}
+
+.shelf-toggle {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	cursor: pointer;
+	transition: transform 0.3s;
+}
+
+.shelf-toggle[aria-label] {
+	outline: none;
+}
+
+.shelf.expanded .books-row {
+	height: auto;
+	opacity: 1;
+	transition: height 0.6s, opacity 0.6s;
+}
+
+.shelf.collapsed .books-row {
+	height: 0;
+	opacity: 0;
+	transition: height 0.4s, opacity 0.4s;
+}
+
+.book-title-spine {
+	opacity: 1;
+	transition: opacity 0.3s;
+}
+
+.book-spine.expanded .book-title-spine {
+	opacity: 0;
+}
+
+.book-cover {
+	opacity: 0;
+	transition: opacity 0.25s;
+}
+
+.book-spine.expanded .book-cover {
+	opacity: 1;
+}
+
+.book-cover-image {
+	width: 100%;
+	height: auto;
+	display: block;
+	margin: 0 auto;
+}
+
+.book-cover-title {
+	font-size: 1rem;
+	font-weight: bold;
+	margin: 0.5em 0 0.2em 0;
+	text-align: center;
+}
+
+.book-cover-author {
+	font-size: 0.9rem;
+	color: #666;
+	margin-bottom: 0.5em;
+	text-align: center;
+}
+
+.book-actions {
+	display: flex;
+	justify-content: center;
+	gap: 0.5em;
+	margin-top: 0.5em;
+}

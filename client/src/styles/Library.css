@@ -1,0 +1,108 @@
+/* Library styles for migrated inline styles */
+
+.library-wrapper {
+	min-height: 100vh;
+	background: linear-gradient(120deg, #7b4397 0%, #dc2430 100%);
+	color: #fff;
+	font-family: "Lato", "Playfair Display", sans-serif;
+}
+
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 2em 2em 1em 2em;
+}
+
+.hero {
+	display: flex;
+	flex-direction: column;
+	gap: 2em;
+	padding: 2em;
+}
+
+.mainSec {
+	background: rgba(255, 255, 255, 0.08);
+	border-radius: 1em;
+	padding: 2em;
+	margin-bottom: 2em;
+}
+
+.topicDiv {
+	margin-bottom: 1em;
+}
+
+.topic h3 {
+	font-size: 1.3em;
+	font-weight: bold;
+	margin-bottom: 0.3em;
+}
+
+.recommendDiv {
+	display: flex;
+	gap: 1em;
+}
+
+.recommend {
+	background: #fff;
+	color: #333;
+	border-radius: 0.5em;
+	padding: 1em;
+	width: 120px;
+	min-height: 180px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+	position: relative;
+}
+
+.bookInfo {
+	margin-top: 0.5em;
+	text-align: center;
+}
+
+.title {
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.author {
+	font-size: 0.95em;
+	color: #666;
+}
+
+.fave {
+	margin-top: 0.5em;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+	gap: 0.3em;
+}
+
+.faveIcon {
+	width: 18px;
+	height: 18px;
+}
+
+.carousel-arrow {
+	background: none;
+	border: none;
+	color: #7b4397;
+	font-size: 1.5em;
+	cursor: pointer;
+	margin: 0 0.5em;
+}
+
+.carousel-arrow:focus {
+	outline: 2px solid #dc2430;
+}
+
+@media (max-width: 900px) {
+	.hero {
+		padding: 1em;
+	}
+	.mainSec {
+		padding: 1em;
+	}
+}

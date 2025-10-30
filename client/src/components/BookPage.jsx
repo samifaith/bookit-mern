@@ -170,9 +170,7 @@ function BookPage() {
 	if (!book) {
 		return (
 			<div className="bookpage-wrapper">
-				<div style={{ padding: "100px", textAlign: "center", color: "white" }}>
-					Book not found
-				</div>
+				<div className="book-not-found-message">Book not found</div>
 			</div>
 		);
 	}
