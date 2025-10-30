@@ -155,7 +155,7 @@ module.exports = function (app, passport, db, jwt) {
 	// FAVORITE BOOKS ROUTES
 	app.post("/api/user/favorites", authenticateToken, async (req, res) => {
 		try {
-			const { isbn, title, authors, imageLink } = req.body;
+			const { isbn, title, authors, imageLink, categories } = req.body;
 
 			// Check if book is already in favorites
 			const user = await db
@@ -179,6 +179,7 @@ module.exports = function (app, passport, db, jwt) {
 							title,
 							authors,
 							imageLink,
+							categories: categories || [],
 							addedAt: new Date(),
 						},
 					},
@@ -222,7 +223,59 @@ module.exports = function (app, passport, db, jwt) {
 		} catch (err) {
 			res.status(500).json({ message: err.message });
 		}
-	}); // =============================================================================
+	});
+
+	// Get book recommendations based on favorited books
+	app.get("/api/user/recommendations", authenticateToken, async (req, res) => {
+		try {
+			const user = await db
+				.collection("users")
+				.findOne({ _id: new mongoose.Types.ObjectId(req.user._id) });
+
+			const favoriteBooks = user.favoriteBooks || [];
+
+			if (favoriteBooks.length === 0) {
+				return res.json({ recommendations: [] });
+			}
+
+			// Extract all unique categories from favorited books
+			const categorySet = new Set();
+			favoriteBooks.forEach((book) => {
+				if (book.categories && book.categories.length > 0) {
+					book.categories.forEach((cat) => {
+						// Split combined categories (e.g., "Fiction / Romance")
+						cat.split("/").forEach((c) => {
+							const trimmed = c.trim();
+							if (trimmed) categorySet.add(trimmed);
+						});
+					});
+				}
+			});
+
+			const categories = Array.from(categorySet);
+
+			// If no categories found, use favorite genres as fallback
+			if (
+				categories.length === 0 &&
+				user.favGenres &&
+				user.favGenres.length > 0
+			) {
+				return res.json({
+					recommendations: user.favGenres.slice(0, 5), // Use favGenres as fallback
+					favoriteBookCount: favoriteBooks.length,
+					usingFallback: true,
+				});
+			}
+
+			res.json({
+				recommendations: categories.slice(0, 5), // Return top 5 categories
+				favoriteBookCount: favoriteBooks.length,
+			});
+		} catch (err) {
+			res.status(500).json({ message: err.message });
+		}
+	});
+	// =============================================================================
 	// LEGACY ROUTES (for backwards compatibility if needed) ======================
 	// =============================================================================
 

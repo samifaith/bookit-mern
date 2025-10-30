@@ -12,10 +12,17 @@ import Login from "./components/Login";
 import Profile from "./components/Profile";
 import Library from "./components/Library";
 import BookPage from "./components/BookPage";
+import Loading from "./components/Loading";
 
 const ProtectedRoute = ({ children }) => {
-	const { user } = useAuth();
-	return user ? children : <Navigate to="/login" />;
+	const { user, loading } = useAuth();
+
+	// Show loading spinner while checking authentication
+	if (loading) {
+		return <Loading />;
+	}
+
+	return user ? children : <Navigate to="/login" replace />;
 };
 
 function App() {

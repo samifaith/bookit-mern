@@ -1,0 +1,105 @@
+/* Base Button Styles */
+.btn {
+	font-family: "Work Sans", "Lato", sans-serif;
+	font-weight: 600;
+	border: none;
+	border-radius: 20px;
+	cursor: pointer;
+	transition: all 0.2s ease;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	text-decoration: none;
+	outline: none;
+}
+
+.btn:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
+/* Primary Button - Purple Gradient */
+.btn-primary {
+	background: var(
+		--gradient-primary,
+		linear-gradient(135deg, #4100f4 0%, #6366f1 100%)
+	);
+	color: var(--color-white, white);
+	border: 2px solid transparent;
+}
+
+.btn-primary:hover:not(:disabled) {
+	background: var(
+		--gradient-primary-hover,
+		linear-gradient(135deg, #3300cc 0%, #4f46e5 100%)
+	);
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-primary-lg, 0 6px 16px rgba(65, 0, 244, 0.35));
+}
+
+.btn-primary:active:not(:disabled) {
+	transform: translateY(0);
+	box-shadow: var(--shadow-primary, 0 2px 8px rgba(65, 0, 244, 0.2));
+}
+
+/* Secondary Button - Outlined */
+.btn-secondary {
+	background: var(--color-white, white);
+	color: var(--color-primary, #4100f4);
+	border: 2px solid var(--color-primary, #4100f4);
+}
+
+.btn-secondary:hover:not(:disabled) {
+	background: var(--color-primary, #4100f4);
+	color: var(--color-white, white);
+	transform: translateY(-1px);
+	box-shadow: var(--shadow-primary, 0 4px 12px rgba(65, 0, 244, 0.2));
+}
+
+.btn-secondary:active:not(:disabled) {
+	transform: translateY(0);
+}
+
+/* Danger Button - Red */
+.btn-danger {
+	background: var(--color-white, white);
+	color: var(--color-danger, #dc2626);
+	border: 2px solid var(--color-danger, #dc2626);
+}
+
+.btn-danger:hover:not(:disabled) {
+	background: var(--color-danger, #dc2626);
+	color: var(--color-white, white);
+	transform: translateY(-1px);
+	box-shadow: 0 4px 12px rgba(220, 38, 38, 0.2);
+}
+
+/* Ghost Button - Transparent */
+.btn-ghost {
+	background: transparent;
+	color: var(--color-primary, #4100f4);
+	border: 2px solid transparent;
+}
+
+.btn-ghost:hover:not(:disabled) {
+	background: rgba(65, 0, 244, 0.1);
+	border-color: var(--color-primary, #4100f4);
+}
+
+/* Size Variants */
+.btn-small {
+	padding: 6px 12px;
+	font-size: 12px;
+	border-radius: 16px;
+}
+
+.btn-medium {
+	padding: 10px 20px;
+	font-size: 14px;
+}
+
+.btn-large {
+	padding: 14px 28px;
+	font-size: 16px;
+	border-radius: 24px;
+}

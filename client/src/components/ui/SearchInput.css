@@ -1,0 +1,20 @@
+.search-input {
+	width: 100%;
+	padding: 14px 20px;
+	border-radius: 24px;
+	border: 2px solid var(--color-gray-200, #e0e0e0);
+	font-size: 15px;
+	font-family: "Lato", sans-serif;
+	outline: none;
+	transition: all 0.3s ease;
+	box-shadow: var(--shadow-sm, 0 2px 8px rgba(0, 0, 0, 0.08));
+}
+
+.search-input:focus {
+	border-color: var(--color-primary, #4100f4);
+	box-shadow: var(--shadow-primary, 0 4px 12px rgba(65, 0, 244, 0.2));
+}
+
+.search-input::placeholder {
+	color: var(--color-gray-400, #999);
+}

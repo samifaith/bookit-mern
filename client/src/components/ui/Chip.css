@@ -1,0 +1,107 @@
+/* Base Chip Styles */
+.chip {
+	font-family: "Work Sans", "Lato", sans-serif;
+	font-weight: 600;
+	border-radius: 24px;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	white-space: nowrap;
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	border: 2px solid transparent;
+	outline: none;
+}
+
+.chip-count {
+	opacity: 0.8;
+	font-size: 0.9em;
+}
+
+/* Filter Chip (for genre filtering) */
+.chip-filter {
+	padding: 10px 18px;
+	font-size: 14px;
+}
+
+.chip-filter.chip-active {
+	background: var(
+		--gradient-primary,
+		linear-gradient(135deg, #4100f4 0%, #6366f1 100%)
+	);
+	color: var(--color-white, white);
+	border-color: var(--color-primary, #4100f4);
+	box-shadow: var(--shadow-primary, 0 4px 12px rgba(65, 0, 244, 0.25));
+}
+
+.chip-filter.chip-active:hover {
+	transform: translateY(-2px);
+	box-shadow: var(--shadow-primary-lg, 0 6px 16px rgba(65, 0, 244, 0.35));
+}
+
+.chip-filter.chip-inactive {
+	background: rgba(200, 200, 200, 0.3);
+	color: var(--color-gray-500, #666);
+	border-color: var(--color-gray-300, #ccc);
+}
+
+.chip-filter.chip-inactive:hover {
+	background: rgba(200, 200, 200, 0.5);
+	border-color: var(--color-gray-400, #999);
+	transform: translateY(-1px);
+}
+
+/* Toggle Chip (for genre preferences) */
+.chip-toggle {
+	padding: 12px 20px;
+	font-size: 15px;
+	border-radius: 28px;
+}
+
+.chip-toggle.chip-active {
+	background: var(
+		--gradient-primary,
+		linear-gradient(135deg, #4100f4 0%, #6366f1 100%)
+	);
+	color: var(--color-white, white);
+	border-color: var(--color-primary, #4100f4);
+	box-shadow: var(--shadow-primary, 0 4px 12px rgba(65, 0, 244, 0.2));
+}
+
+.chip-toggle.chip-active:hover {
+	background: var(
+		--gradient-primary-hover,
+		linear-gradient(135deg, #3300cc 0%, #4f46e5 100%)
+	);
+	transform: translateY(-2px);
+	box-shadow: 0 6px 16px rgba(65, 0, 244, 0.3);
+}
+
+.chip-toggle.chip-inactive {
+	background: var(--color-white, white);
+	color: var(--color-gray-500, #666);
+	border-color: var(--color-gray-200, #e0e0e0);
+}
+
+.chip-toggle.chip-inactive:hover {
+	border-color: var(--color-primary, #4100f4);
+	color: var(--color-primary, #4100f4);
+	transform: translateY(-1px);
+}
+
+/* Compact Chip (for smaller spaces) */
+.chip-compact {
+	padding: 6px 12px;
+	font-size: 12px;
+	border-radius: 16px;
+}
+
+.chip-compact.chip-active {
+	background: var(--color-primary, #4100f4);
+	color: var(--color-white, white);
+}
+
+.chip-compact.chip-inactive {
+	background: var(--color-gray-100, #f5f5f5);
+	color: var(--color-gray-500, #666);
+}

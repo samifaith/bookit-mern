@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import axios from "axios";
+import Loading from "./Loading";
+import { Button } from "./ui";
 
 function BookPage() {
 	const [book, setBook] = useState(null);
@@ -34,37 +36,80 @@ function BookPage() {
 			);
 			setIsFavorite(isFav);
 		} catch (err) {
-			console.log("Error checking favorites:", err);
+			console.error("Error checking favorites:", err);
 		}
 	};
 
 	const fetchBookDetails = async () => {
 		try {
-			const response = await fetch(
-				`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`
-			);
+			// First, try to get the book from favorites to get the title
+			const token = localStorage.getItem("token");
+			let bookTitle = null;
+
+			if (token) {
+				try {
+					const favResponse = await axios.get(
+						"http://localhost:7070/api/user/favorites",
+						{
+							headers: { Authorization: `Bearer ${token}` },
+						}
+					);
+					const favoriteBook = favResponse.data.favoriteBooks?.find(
+						(book) => book.isbn === isbn
+					);
+					if (favoriteBook) {
+						bookTitle = favoriteBook.title;
+					}
+				} catch (err) {
+					// Could not fetch from favorites, will try direct search
+				}
+			}
+
+			const isStandardIsbn = /^[0-9-X]+$/.test(isbn);
+
+			let response;
+			if (isStandardIsbn) {
+				response = await fetch(
+					`https://www.googleapis.com/books/v1/volumes?q=isbn:${isbn}`
+				);
+			} else if (bookTitle) {
+				response = await fetch(
+					`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+						bookTitle
+					)}`
+				);
+			} else {
+				response = await fetch(
+					`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+						isbn
+					)}`
+				);
+			}
+
 			const data = await response.json();
 
 			if (data.items && data.items[0]) {
 				const bookData = data.items[0].volumeInfo;
 				setBook(bookData);
 
-				// Fetch additional data from Open Library for excerpts if available
-				try {
-					const olResponse = await fetch(
-						`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`
-					);
-					const olData = await olResponse.json();
-					const olBook = olData[`ISBN:${isbn}`];
+				// Fetch additional data from Open Library for excerpts if available (only for standard ISBNs)
+				if (isStandardIsbn) {
+					try {
+						const olResponse = await fetch(
+							`https://openlibrary.org/api/books?bibkeys=ISBN:${isbn}&format=json&jscmd=data`
+						);
+						const olData = await olResponse.json();
+						const olBook = olData[`ISBN:${isbn}`];
 
-					if (olBook && olBook.excerpts && olBook.excerpts.length > 0) {
-						setBook((prev) => ({
-							...prev,
-							excerpts: olBook.excerpts,
-						}));
+						if (olBook && olBook.excerpts && olBook.excerpts.length > 0) {
+							setBook((prev) => ({
+								...prev,
+								excerpts: olBook.excerpts,
+							}));
+						}
+					} catch (olErr) {
+						// Open Library data not available
 					}
-				} catch (olErr) {
-					console.log("Open Library data not available");
 				}
 			}
 			setLoading(false);
@@ -99,6 +144,7 @@ function BookPage() {
 						authors: book.authors || [],
 						imageLink:
 							book.imageLinks?.thumbnail || book.imageLinks?.smallThumbnail,
+						categories: book.categories || [],
 					},
 					{
 						headers: { Authorization: `Bearer ${token}` },
@@ -113,11 +159,11 @@ function BookPage() {
 		}
 	};
 
-	if (loading) return <div>Loading...</div>;
 	if (!book) return <div>Book not found</div>;
 
 	return (
 		<div className="bookpage-wrapper">
+			{loading && <Loading />}
 			<link
 				rel="stylesheet"
 				href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"
@@ -140,8 +186,8 @@ function BookPage() {
 				<Link to="/profile">
 					<input type="button" name="" value="PROFILE" />
 				</Link>
-				<Link to="/interests">
-					<input type="button" name="" value="INTERESTS" />
+				<Link to="/library">
+					<input type="button" name="" value="LIBRARY" />
 				</Link>
 			</header>
 
@@ -178,14 +224,14 @@ function BookPage() {
 							<strong>Published:</strong> {book.publishedDate}
 						</p>
 					)}
-					<p
-						onClick={handleAddToFavorites}
-						className={`favorite-btn ${
-							isFavorite ? "favorited" : "not-favorited"
-						}`}
-					>
-						{isFavorite ? "★ Remove from Favorites" : "☆ Add to Favorites"}
-					</p>
+					<div style={{ margin: "20px 0" }}>
+						<Button
+							variant={isFavorite ? "danger" : "primary"}
+							onClick={handleAddToFavorites}
+						>
+							{isFavorite ? "★ Remove from Favorites" : "☆ Add to Favorites"}
+						</Button>
+					</div>
 					{book.infoLink && (
 						<p>
 							<a href={book.infoLink} target="_blank" rel="noopener noreferrer">
