@@ -1,0 +1,57 @@
+/* Consolidated global styles from all migrated CSS files */
+
+/* Box Model and Reset */
+* {
+	box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+}
+body {
+	font-size: 10px;
+	font-family: "Lato", Helvetica, Arial, sans-serif;
+	margin: 0;
+	color: rgba(255, 255, 255, 1);
+	background: linear-gradient(
+		360deg,
+		rgba(25, 13, 41, 1) 39%,
+		rgba(33, 14, 59, 1) 80%,
+		rgba(38, 27, 99, 1) 100%
+	);
+	overflow-x: hidden;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	font-family: "Playfair Display", Georgia, serif;
+	font-weight: 700;
+}
+p,
+label {
+	font-family: "Lato", Helvetica, Arial, sans-serif;
+}
+
+/* Utility classes and clearfix */
+.clearfix:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+.clear {
+	clear: both;
+}
+.alignright {
+	float: right;
+	padding: 0 0 10px 10px;
+}
+.alignleft {
+	float: left;
+	padding: 0 10px 10px 0;
+}
+
+/* Responsive breakpoints and other global rules can be added here as needed */
