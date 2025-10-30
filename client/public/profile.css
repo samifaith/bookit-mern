@@ -221,6 +221,7 @@ p {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	-webkit-line-clamp: 2;
+	line-clamp: 2;
 	-webkit-box-orient: vertical;
 }
 .author {
@@ -229,6 +230,7 @@ p {
 	display: -webkit-box;
 	overflow: hidden;
 	-webkit-line-clamp: 1;
+	line-clamp: 1;
 	-webkit-box-orient: vertical;
 }
 
@@ -241,9 +243,6 @@ p {
 #genre2,
 #genre3 {
 	border-bottom: 1px solid rgb(181, 176, 255, 0.15);
-}
-#genre3 .topic,
-#genre3 .circle {
 }
 
 /* Section Headers */
@@ -333,4 +332,199 @@ p {
 	animation: pulse 1.5s ease-in-out infinite;
 	background: #f0f0f0;
 	border-radius: 8px;
+}
+
+/******************************************
+/* RESPONSIVE BREAKPOINTS
+/*******************************************/
+
+/* Large tablets and small desktops (1200px and below) */
+@media screen and (max-width: 1200px) {
+	.mainSec {
+		flex-wrap: wrap;
+	}
+
+	.topicDiv {
+		width: 100%;
+		justify-content: center;
+		margin-bottom: 20px;
+	}
+
+	.recommendDiv {
+		width: 100%;
+		justify-content: center;
+		flex-wrap: wrap;
+		height: auto;
+		min-height: auto;
+		gap: 20px;
+		padding: 20px 0;
+	}
+
+	.recommend {
+		width: 45%;
+		min-width: 300px;
+		height: auto;
+		min-height: 200px;
+	}
+
+	.circleDiv {
+		width: 100%;
+		margin-top: 20px;
+	}
+}
+
+/* Tablets (992px and below) */
+@media screen and (max-width: 992px) {
+	header {
+		flex-direction: column;
+		height: auto;
+		padding: 10px;
+	}
+
+	#logo {
+		margin-bottom: 10px;
+	}
+
+	#logo img {
+		margin-left: 0;
+		height: 8vh;
+	}
+
+	#dropdown {
+		flex-direction: column;
+		gap: 10px;
+		font-size: 2rem;
+		width: 100%;
+	}
+
+	#dropdown a,
+	#dropdown input {
+		margin-right: 0;
+		width: 100%;
+		text-align: center;
+	}
+
+	.hero {
+		height: auto;
+		min-height: 90vh;
+	}
+
+	.recommend {
+		width: 80%;
+		max-width: 400px;
+	}
+
+	h3 {
+		font-size: 2rem;
+	}
+}
+
+/* Mobile devices (768px and below) */
+@media screen and (max-width: 768px) {
+	.mainSec {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.topicDiv,
+	.recommendDiv,
+	.circleDiv {
+		width: 100%;
+	}
+
+	.topic {
+		width: 90vw;
+		max-width: 500px;
+		text-align: center;
+	}
+
+	.recommendDiv {
+		flex-direction: column;
+		gap: 15px;
+		padding: 10px;
+	}
+
+	.recommend {
+		width: 90%;
+		max-width: 400px;
+		padding: 15px;
+	}
+
+	.bookInfo {
+		width: 50%;
+	}
+
+	.title {
+		font-size: 1.1rem;
+	}
+
+	.author {
+		font-size: 0.9rem;
+	}
+
+	.fave {
+		padding: 8px 16px;
+	}
+
+	h3 {
+		font-size: 1.8rem;
+	}
+}
+
+/* Small mobile devices (576px and below) */
+@media screen and (max-width: 576px) {
+	header {
+		padding: 5px;
+	}
+
+	#logo img {
+		height: 6vh;
+	}
+
+	#dropdown {
+		font-size: 1.5rem;
+	}
+
+	.recommend {
+		width: 95%;
+		flex-direction: column;
+		padding: 10px;
+		min-height: auto;
+	}
+
+	.recommend a img {
+		max-width: 120px;
+		margin-bottom: 10px;
+	}
+
+	.bookInfo {
+		width: 100%;
+	}
+
+	.title {
+		font-size: 1rem;
+	}
+
+	.author {
+		font-size: 0.85rem;
+	}
+
+	.fave {
+		width: 100%;
+		margin-top: 10px;
+	}
+
+	h3 {
+		font-size: 1.5rem;
+	}
+
+	.carousel-arrow-prev,
+	.carousel-arrow-next {
+		margin: 8px 0;
+	}
+
+	.refresh-button {
+		width: 100%;
+		margin: 10px 0;
+	}
 }

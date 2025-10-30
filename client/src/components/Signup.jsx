@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import Button from "./ui/Button";
+import SearchInput from "./ui/SearchInput";
 
 function Signup() {
 	const [formData, setFormData] = useState({
@@ -74,42 +76,63 @@ function Signup() {
 				</header>
 				<div className="container">
 					<form onSubmit={handleSubmit}>
-						<p>Create an account to discover your next great read.</p>
-						<label htmlFor="firstName">First Name</label>
-						<input
-							type="text"
-							id="firstName"
-							name="firstName"
-							value={formData.firstName}
-							onChange={handleChange}
-						/>
-						<label htmlFor="lastName">Last Name</label>
-						<input
-							type="text"
-							id="lastName"
-							name="lastName"
-							value={formData.lastName}
-							onChange={handleChange}
-						/>
-						<label htmlFor="email">Email</label>
-						<input
-							type="text"
-							id="email"
-							name="email"
-							value={formData.email}
-							onChange={handleChange}
-						/>
-						<label htmlFor="password">Password</label>
-						<input
-							type="password"
-							id="password"
-							name="password"
-							value={formData.password}
-							onChange={handleChange}
-						/>
-						<button type="submit">NEXT</button>
+						<p className="form-description">
+							Create an account to discover your next great read.
+						</p>
+						<div className="form-group">
+							<label htmlFor="firstName">First Name</label>
+							<SearchInput
+								type="text"
+								id="firstName"
+								name="firstName"
+								value={formData.firstName}
+								onChange={handleChange}
+								placeholder="Enter your first name"
+							/>
+						</div>
+						<div className="form-group">
+							<label htmlFor="lastName">Last Name</label>
+							<SearchInput
+								type="text"
+								id="lastName"
+								name="lastName"
+								value={formData.lastName}
+								onChange={handleChange}
+								placeholder="Enter your last name"
+							/>
+						</div>
+						<div className="form-group">
+							<label htmlFor="email">Email</label>
+							<SearchInput
+								type="email"
+								id="email"
+								name="email"
+								value={formData.email}
+								onChange={handleChange}
+								placeholder="Enter your email"
+							/>
+						</div>
+						<div className="form-group">
+							<label htmlFor="password">Password</label>
+							<SearchInput
+								type="password"
+								id="password"
+								name="password"
+								value={formData.password}
+								onChange={handleChange}
+								placeholder="Enter your password"
+							/>
+						</div>
+						<Button
+							type="submit"
+							variant="primary"
+							size="large"
+							className="submit-button"
+						>
+							NEXT
+						</Button>
 					</form>
-					<p>
+					<p className="login-link">
 						Already have an account? <Link to="/login">Login</Link>
 					</p>
 				</div>

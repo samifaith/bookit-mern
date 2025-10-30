@@ -159,11 +159,26 @@ function BookPage() {
 		}
 	};
 
-	if (!book) return <div>Book not found</div>;
+	if (loading) {
+		return (
+			<div className="bookpage-wrapper">
+				<Loading />
+			</div>
+		);
+	}
+
+	if (!book) {
+		return (
+			<div className="bookpage-wrapper">
+				<div style={{ padding: "100px", textAlign: "center", color: "white" }}>
+					Book not found
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="bookpage-wrapper">
-			{loading && <Loading />}
 			<link
 				rel="stylesheet"
 				href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"
@@ -180,20 +195,24 @@ function BookPage() {
 			/>
 
 			<header>
-				<Link to="/">
-					<img src="/images/booksWhiote.png" alt="BookIt! Logo" />
+				<Link to="/library" style={{ textDecoration: "none" }}>
+					<Button variant="secondary" size="medium">
+						<img
+							src="/images/purpleplane.png"
+							alt="Back"
+							className="back-arrow"
+						/>
+						<span className="back-text">BACK TO LIBRARY</span>
+					</Button>
 				</Link>
-				<Link to="/profile">
-					<input type="button" name="" value="PROFILE" />
-				</Link>
-				<Link to="/library">
-					<input type="button" name="" value="LIBRARY" />
+				<Link to="/" className="logo-link">
+					<img src="/images/booksPurple.png" alt="BookIt! Logo" />
 				</Link>
 			</header>
 
 			<section id="hero">
 				<section id="leftPanel">
-					<section id="book">
+					<div id="bookContainer">
 						<img
 							src={
 								book.imageLinks?.thumbnail?.replace("zoom=1", "zoom=3") ||
@@ -203,51 +222,97 @@ function BookPage() {
 							alt={book.title}
 							id="bookimage"
 						/>
-					</section>
+						<div className="book-actions">
+							<Button
+								variant={isFavorite ? "danger" : "primary"}
+								onClick={handleAddToFavorites}
+								className="favorite-button"
+							>
+								{isFavorite ? "★ FAVORITED" : "☆ ADD TO FAVORITES"}
+							</Button>
+						</div>
+					</div>
 				</section>
 				<section id="rightPanel">
-					<h2>{book.title}</h2>
-					<h3>{book.authors?.join(", ") || "Unknown Author"}</h3>
-					{book.averageRating ? (
-						<p>
-							<strong>Rating:</strong> {book.averageRating}/5 (
-							{book.ratingsCount || 0} ratings)
-						</p>
-					) : null}
-					{book.categories && book.categories.length > 0 && (
-						<p>
-							<strong>Genre:</strong> {book.categories.join(", ")}
-						</p>
-					)}
-					{book.publishedDate && (
-						<p>
-							<strong>Published:</strong> {book.publishedDate}
-						</p>
-					)}
-					<div style={{ margin: "20px 0" }}>
-						<Button
-							variant={isFavorite ? "danger" : "primary"}
-							onClick={handleAddToFavorites}
-						>
-							{isFavorite ? "★ Remove from Favorites" : "☆ Add to Favorites"}
-						</Button>
+					<div className="book-header">
+						<h1 className="book-title">{book.title}</h1>
+						<h2 className="book-author">
+							by {book.authors?.join(", ") || "Unknown Author"}
+						</h2>
 					</div>
-					{book.infoLink && (
-						<p>
-							<a href={book.infoLink} target="_blank" rel="noopener noreferrer">
-								Purchase Link
-							</a>
+
+					<div className="book-description">
+						<p className="description-text">
+							{book.description
+								? book.description.replace(/<[^>]*>/g, "")
+								: "No description available."}
 						</p>
-					)}
-					{book.description && (
-						<div className="largeText">
-							<strong>Description:</strong>{" "}
-							{book.description.replace(/<[^>]*>/g, "")}
+					</div>
+
+					<div className="book-meta">
+						<div className="meta-row">
+							<div className="meta-item">
+								<span className="meta-label">Editors</span>
+								<span className="meta-value">
+									{book.publisher || "Unknown"}
+								</span>
+							</div>
+							<div className="meta-item">
+								<span className="meta-label">Release Date</span>
+								<span className="meta-value">
+									{book.publishedDate || "Unknown"}
+								</span>
+							</div>
+						</div>
+						<div className="meta-row">
+							<div className="meta-item">
+								<span className="meta-label">Format</span>
+								<span className="meta-value">
+									{book.printType || "Digital"}
+								</span>
+							</div>
+							<div className="meta-item">
+								<span className="meta-label">Features</span>
+								<span className="meta-value">
+									{book.pageCount ? `${book.pageCount} pages` : "Full color"}
+								</span>
+							</div>
+						</div>
+						<div className="meta-row">
+							<div className="meta-item">
+								<span className="meta-label">Language</span>
+								<span className="meta-value">
+									{book.language === "en" ? "English" : book.language}
+								</span>
+							</div>
+							<div className="meta-item">
+								<span className="meta-label">ISBN</span>
+								<span className="meta-value">{isbn}</span>
+							</div>
+						</div>
+					</div>
+
+					{book.averageRating && (
+						<div className="book-review">
+							<div className="reviewer-info">
+								<div className="reviewer-avatar">
+									{book.authors?.[0]?.charAt(0) || "?"}
+								</div>
+								<div className="reviewer-details">
+									<span className="reviewer-name">Reviewed By</span>
+									<span className="reviewer-subtitle">Reader Community</span>
+								</div>
+							</div>
+							<p className="review-text">
+								"{book.averageRating}/5 stars - Based on{" "}
+								{book.ratingsCount || 0} reader reviews"
+							</p>
 						</div>
 					)}
+
 					{book.excerpts && book.excerpts.length > 0 && (
-						<div className="largeText">
-							<strong>Excerpt:</strong> {book.excerpts[0].text}
+						<div className="book-excerpt">
+							<p className="excerpt-text">"{book.excerpts[0].text}"</p>
 						</div>
 					)}
 				</section>

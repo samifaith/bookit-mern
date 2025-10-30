@@ -121,7 +121,7 @@ h1 img {
 	overflow-y: auto;
 }
 #rightPanel .container {
-	width: 80%;
+	width: 90%;
 	margin: 0 auto;
 }
 
@@ -137,9 +137,7 @@ li {
 	font-size: 1.2rem;
 	font-family: "Lato";
 }
-header {
-	margin-top: 50px;
-}
+
 header li {
 	justify-content: center;
 }
@@ -168,7 +166,7 @@ p {
 	justify-content: space-evenly;
 }
 #listInput div {
-	margin: 25px;
+	margin: 10px;
 	display: flex;
 	align-items: center;
 }

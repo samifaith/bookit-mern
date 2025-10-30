@@ -1,10 +1,41 @@
+/* Profile Page Header */
+header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 20px 0;
+	margin-bottom: 24px;
+}
+
+.back-arrow {
+	width: 20px;
+	height: auto;
+	margin-right: 8px;
+	transform: rotate(180deg);
+	filter: brightness(0) saturate(100%) invert(15%) sepia(98%) saturate(6943%)
+		hue-rotate(258deg) brightness(94%) contrast(128%);
+}
+
+.btn-secondary:hover .back-arrow {
+	filter: brightness(0) invert(1);
+}
+
+.logo-link {
+	text-decoration: none;
+}
+
+.logo-link img {
+	max-width: 150px;
+	height: auto;
+}
+
 /* Profile Page Section Headers */
 .section-header {
 	font-family: "Playfair Display", serif !important;
 	color: var(--color-primary, #4100f4) !important;
 	font-size: 32px !important;
 	font-weight: 700 !important;
-	margin-bottom: 12px;
+	margin-bottom: 8px;
 	margin-top: 0;
 	text-align: center;
 }
@@ -13,21 +44,21 @@
 	text-align: center;
 	font-family: "Lato", sans-serif !important;
 	color: var(--color-gray-600, #666666) !important;
-	margin-bottom: 24px;
+	margin-bottom: 16px;
 	margin-top: 0;
 	font-size: 15px;
 }
 
 .section-container {
-	margin-top: 60px;
-	margin-bottom: 40px;
+	margin-top: 16px;
+	margin-bottom: 12px;
 }
 
 /* Genre Search Container */
 .genre-search-wrapper {
 	position: relative;
-	max-width: 500px;
-	margin: 0 auto 30px auto;
+	max-width: 100%;
+	margin: 0 auto 16px auto;
 }
 
 .genre-dropdown {
@@ -75,12 +106,12 @@
 
 /* Genre Selection Box */
 .genre-selection-container {
-	padding: 20px;
+	padding: 10px;
 	background: rgba(255, 255, 255, 0.5);
 	border-radius: 16px;
 	backdrop-filter: blur(10px);
 	border: 1px solid rgba(65, 0, 244, 0.1);
-	margin-bottom: 30px;
+	margin-bottom: 10px;
 }
 
 .genre-chips-wrapper {
@@ -156,4 +187,31 @@
 	font-family: "Lato", sans-serif;
 	color: #666;
 	font-size: 13px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+	.logo-link img {
+		max-width: 120px;
+	}
+
+	.back-arrow {
+		width: 18px;
+		margin-right: 6px;
+	}
+}
+
+@media (max-width: 576px) {
+	.back-text {
+		display: none;
+	}
+
+	.back-arrow {
+		width: 20px;
+		margin-right: 0;
+	}
+
+	.logo-link img {
+		max-width: 100px;
+	}
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
 import Loading from "./Loading";
@@ -102,67 +102,63 @@ function Profile() {
 					!genreExists(genre)
 			);
 
-			// Show local matches immediately
-			if (localMatches.length > 0) {
-				setGenreSuggestions(localMatches.slice(0, 8));
+			// Always fetch from API to get comprehensive results
+			setIsSearching(true);
+			try {
+				const response = await fetch(
+					`https://www.googleapis.com/books/v1/volumes?q=subject:${encodeURIComponent(
+						searchInput
+					)}&maxResults=40`
+				);
+				const data = await response.json();
+
+				const categoriesSet = new Set();
+
+				// Add local matches first (they're most relevant)
+				localMatches.forEach((match) => categoriesSet.add(match));
+
+				// Then add API results
+				if (data.items) {
+					data.items.forEach((item) => {
+						if (item.volumeInfo.categories) {
+							item.volumeInfo.categories.forEach((category) => {
+								category.split("/").forEach((cat) => {
+									const trimmedCat = cat.trim();
+									if (
+										trimmedCat &&
+										trimmedCat
+											.toLowerCase()
+											.includes(searchInput.toLowerCase()) &&
+										!genreExists(trimmedCat)
+									) {
+										categoriesSet.add(trimmedCat);
+									}
+								});
+							});
+						}
+					});
+				}
+
+				// If no results, add the search term as an option
+				if (categoriesSet.size === 0) {
+					const searchTerm =
+						searchInput.charAt(0).toUpperCase() + searchInput.slice(1);
+					if (!genreExists(searchTerm)) {
+						categoriesSet.add(searchTerm);
+					}
+				}
+
+				// Show top 10 results
+				const suggestions = Array.from(categoriesSet).slice(0, 10);
+				setGenreSuggestions(suggestions);
 				setShowDropdown(true);
 				setIsSearching(false);
-			} else {
-				// Only hit API if no local matches found
-				setIsSearching(true);
-				try {
-					const response = await fetch(
-						`https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
-							searchInput
-						)}&maxResults=20`
-					);
-					const data = await response.json();
-
-					if (data.items) {
-						const categoriesSet = new Set();
-						data.items.forEach((item) => {
-							if (item.volumeInfo.categories) {
-								item.volumeInfo.categories.forEach((category) => {
-									category.split("/").forEach((cat) => {
-										const trimmedCat = cat.trim();
-										if (
-											trimmedCat &&
-											trimmedCat
-												.toLowerCase()
-												.includes(searchInput.toLowerCase()) &&
-											!genreExists(trimmedCat)
-										) {
-											categoriesSet.add(trimmedCat);
-										}
-									});
-								});
-							}
-						});
-
-						// Only add search term if no categories found and it doesn't exist
-						const searchTerm =
-							searchInput.charAt(0).toUpperCase() + searchInput.slice(1);
-						if (categoriesSet.size === 0 && !genreExists(searchTerm)) {
-							categoriesSet.add(searchTerm);
-						}
-
-						const suggestions = Array.from(categoriesSet).slice(0, 8);
-						setGenreSuggestions(suggestions);
-						setShowDropdown(true);
-						setIsSearching(false);
-					} else {
-						// No results from API - show "no genre found"
-						setGenreSuggestions([]);
-						setShowDropdown(true);
-						setIsSearching(false);
-					}
-				} catch (err) {
-					console.error("Error fetching genre suggestions:", err);
-					// On error, show "no genre found"
-					setGenreSuggestions([]);
-					setShowDropdown(true);
-					setIsSearching(false);
-				}
+			} catch (err) {
+				console.error("Error fetching genre suggestions:", err);
+				// On error, show local matches or empty
+				setGenreSuggestions(localMatches.slice(0, 10));
+				setShowDropdown(localMatches.length > 0);
+				setIsSearching(false);
 			}
 		};
 
@@ -320,15 +316,19 @@ function Profile() {
 			<section id="rightPanel">
 				<div className="container">
 					<header>
-						<ol>
-							<li>
-								<img src="/images/purpleplane.png" alt="" />
-							</li>
-							<li id="interestStep">PROFILE</li>
-						</ol>
-						<Button variant="secondary" onClick={() => navigate("/library")}>
-							← Back to Library
-						</Button>
+						<Link to="/library" style={{ textDecoration: "none" }}>
+							<Button variant="secondary" size="medium">
+								<img
+									src="/images/purpleplane.png"
+									alt="Back"
+									className="back-arrow"
+								/>
+								<span className="back-text">BACK TO LIBRARY</span>
+							</Button>
+						</Link>
+						<Link to="/" className="logo-link">
+							<img src="/images/booksPurple.png" alt="BookIt! Logo" />
+						</Link>
 					</header>
 					<div className="section-container">
 						<h2 className="section-header">Select the Genres You Love Most</h2>
@@ -401,6 +401,14 @@ function Profile() {
 							UPDATE
 						</button>
 					</form>
+
+					<div style={{ textAlign: "center", margin: "30px 0" }}>
+						<img
+							src="/images/purpleplane.png"
+							alt=""
+							style={{ width: "80px", opacity: 0.8 }}
+						/>
+					</div>
 
 					<div className="section-container">
 						<h2 className="section-header">Add Books You've Read</h2>
